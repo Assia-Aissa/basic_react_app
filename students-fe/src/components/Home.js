@@ -3,25 +3,27 @@ import { Col, Container, Row } from "reactstrap";
 import StudentList from "./StudentList";
 import NewStudentModal from "./NewStudentModal";
 
-import axios from "axios";
-
-import { API_URL } from "../constants";
-
 class Home extends Component {
   state = {
     students: []
   };
 
-  componentDidMount() {
-    this.resetState();
-  }
+  addOrUpdateStudent = (student) => {
+    this.setState((prevState) => {
+      const students = [...prevState.students];
+      const index = students.findIndex((s) => s.pk === student.pk);
 
-  getStudents = () => {
-    axios.get(API_URL).then(res => this.setState({ students: res.data }));
-  };
+      if (index >= 0) {
+        // Modifier un étudiant existant
+        students[index] = student;
+      } else {
+        // Ajouter un nouvel étudiant avec un ID unique simulé
+        student.pk = students.length + 1;
+        students.push(student);
+      }
 
-  resetState = () => {
-    this.getStudents();
+      return { students };
+    });
   };
 
   render() {
@@ -29,15 +31,12 @@ class Home extends Component {
       <Container style={{ marginTop: "20px" }}>
         <Row>
           <Col>
-            <StudentList
-              students={this.state.students}
-              resetState={this.resetState}
-            />
+            <StudentList students={this.state.students} />
           </Col>
         </Row>
         <Row>
           <Col>
-            <NewStudentModal create={true} resetState={this.resetState} />
+            <NewStudentModal create={true} onSubmit={this.addOrUpdateStudent} />
           </Col>
         </Row>
       </Container>

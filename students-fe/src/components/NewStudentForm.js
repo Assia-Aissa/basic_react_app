@@ -1,10 +1,6 @@
 import React from "react";
 import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 
-import axios from "axios";
-
-import { API_URL } from "../constants";
-
 class NewStudentForm extends React.Component {
   state = {
     pk: 0,
@@ -21,33 +17,23 @@ class NewStudentForm extends React.Component {
     }
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  createStudent = e => {
+  createOrEditStudent = (e) => {
     e.preventDefault();
-    axios.post(API_URL, this.state).then(() => {
-      this.props.resetState();
-      this.props.toggle();
-    });
+    this.props.onSubmit(this.state);
+    this.props.toggle();
   };
 
-  editStudent = e => {
-    e.preventDefault();
-    axios.put(API_URL + this.state.pk, this.state).then(() => {
-      this.props.resetState();
-      this.props.toggle();
-    });
-  };
-
-  defaultIfEmpty = value => {
+  defaultIfEmpty = (value) => {
     return value === "" ? "" : value;
   };
 
   render() {
     return (
-      <Form onSubmit={this.props.student ? this.editStudent : this.createStudent}>
+      <Form onSubmit={this.createOrEditStudent}>
         <FormGroup>
           <Label for="name">Name:</Label>
           <Input
