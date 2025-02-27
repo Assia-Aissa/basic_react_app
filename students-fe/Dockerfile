@@ -2,7 +2,7 @@
 FROM node:18 AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install && npm install bootstrap
 COPY . .
 
 # Définir NODE_OPTIONS pour utiliser l'ancien fournisseur OpenSSL
